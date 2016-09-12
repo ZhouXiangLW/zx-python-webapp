@@ -77,18 +77,18 @@ class IntegerField(Field):
 		
 class BooleanField(Field):
 	
-	def __init__(self, name=None, column_type = 'boolean', primary_key = False, default = None):
-		super(IntegerField, self).__init__(name, column_type, primary_key, default)
+	def __init__(self, name=None, column_type = 'boolean', primary_key = False, default = False):
+		super(BooleanField, self).__init__(name, column_type, primary_key, default)
 		
 class FloatField(Field):
 	
 	def __init__(self, name=None, column_type = 'real', primary_key = False, default = 0.0):
-		super(IntegerField, self).__init__(name, column_type, primary_key, default)
+		super(FloatField, self).__init__(name, column_type, primary_key, default)
 		
 class TextField(Field):
 	
 	def __init__(self, name=None, column_type = 'text', default = None):
-		super(IntegerField, self).__init__(name, column_type, default)
+		super(TextField, self).__init__(name, column_type,False, default)
 		
 class ModelMetaclass(type):
 	
@@ -122,9 +122,9 @@ class ModelMetaclass(type):
 		attrs['__table__'] = tableName
 		attrs['__primary_key__'] = primaryKey #主属性名
 		attrs['__fields__'] = fields #除主键外的属性名
-		attrs['__select__'] = 'select `%s`, %s from `%s`' % (primaryKey, ', '.join(escaped_fields), tableName)
-		attrs['__insert__'] = 'insert into `%s` (%s, `%s`) values (%s)' % (tableName, ', '.join(escaped_fields), primaryKey, create_args_string(len(escaped_fields) + 1))
-		attrs['__update__'] = 'update `%s` set %s where `%s`=?' % (tableName, ', '.join(map(lambda f: '`%s`=?' % (mappings.get(f).name or f), fields)), primaryKey)
+		attrs['__select__'] = 'select `%s`, %s from `%s`' % (primaryKey, ','.join(escaped_fields), tableName)
+		attrs['__insert__'] = 'insert into `%s` (%s,`%s`) values (%s)' % (tableName, ','.join(escaped_fields), primaryKey, create_args_string(len(escaped_fields) + 1))
+		attrs['__update__'] = 'update `%s` set %s where `%s`=?' % (tableName, ','.join(map(lambda f: '`%s`=?' % (mappings.get(f).name or f), fields)), primaryKey)
 		attrs['__delete__'] = 'delete from `%s` where `%s`=?' % (tableName, primaryKey)
 		return type.__new__(cls, name, bases, attrs)
 		
@@ -208,5 +208,4 @@ class Model(dict, metaclass=ModelMetaclass):
 			else:
 				raise ValueError('Invalid limit value: %s' % str(limit))
 		rs = await select(' '.join(sql), args)
-		print(rs)
 		return [cls(**r) for r in rs]
