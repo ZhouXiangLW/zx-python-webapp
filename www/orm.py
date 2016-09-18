@@ -22,6 +22,13 @@ def create_pool(loop, **kw):
     )
 
 @asyncio.coroutine
+def destory_pool():
+	global __pool
+	if __pool is not None:
+		__pool.close()
+		yield from __pool.wait_closed()
+
+@asyncio.coroutine
 def select(sql, args, size=None):
 	global __pool
 	with (yield from __pool) as conn:
@@ -184,7 +191,7 @@ class Model(dict, metaclass=ModelMetaclass):
 			logging.warn('failed to remove by primary key: affected rows: %s' % rows)
 
 	@classmethod
-	async def findALL(cls, where = None, args = None, **kw):
+	async def findAll(cls, where = None, args = None, **kw):
 		'find objects by where clause.'
 		sql = [cls.__select__]
 		if where:
@@ -208,4 +215,5 @@ class Model(dict, metaclass=ModelMetaclass):
 			else:
 				raise ValueError('Invalid limit value: %s' % str(limit))
 		rs = await select(' '.join(sql), args)
+		print(rs)
 		return [cls(**r) for r in rs]
