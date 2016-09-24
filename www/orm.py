@@ -173,6 +173,7 @@ class Model(dict, metaclass=ModelMetaclass):
 	async def save(self):
 		args = list(map(self.getValueOrDefault, self.__fields__))
 		args.append(self.getValueOrDefault(self.__primary_key__))
+		print(args)
 		rows = await execute(self.__insert__, args)
 		if rows != 1:
 			logging.warn('failed to insert record:affected rows:%s'%rows)
@@ -196,7 +197,7 @@ class Model(dict, metaclass=ModelMetaclass):
 		sql = [cls.__select__]
 		if where:
 			sql.append('where')
-			sql.append(wtere)
+			sql.append(where)
 		if args is None:
 			args = []
 		orderBy = kw.get('oederBy', None)

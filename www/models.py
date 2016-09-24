@@ -8,7 +8,7 @@ def next_id():
 class User(Model):
 	__table__ = 'users'
 	
-	id = StringField(primary_key=True, default=next_id, column_type='varchar(50)')
+	id = StringField(primary_key=True, default=next_id(), column_type='varchar(50)')
 	email = StringField(column_type = 'varchar(50)')
 	passwd = StringField(column_type = 'varchar(50)')
 	admin = BooleanField()
@@ -19,7 +19,7 @@ class User(Model):
 class Blog(Model):
 	__table__ = 'blogs'
 	
-	id = StringField(primary_key=True, default=next_id, column_type='varchar(50)')
+	id = StringField(primary_key=True, default=next_id(), column_type='varchar(50)')
 	user_id = StringField(column_type='varchar(50)')
 	user_name = StringField(column_type='varchar(50)')
 	user_image = StringField(column_type='varchar(500)')
@@ -31,7 +31,7 @@ class Blog(Model):
 class Comment(Model):
 	__table__ = 'comments'
 	
-	id = StringField(primary_key=True, default=next_id, column_type='varchar(50)')
+	id = StringField(primary_key=True, default=next_id(), column_type='varchar(50)')
 	blog_id = StringField(column_type = 'varchar(50)')
 	user_id = StringField(column_type='varchar(50)')
 	user_name = StringField(column_type='varchar(50)')
