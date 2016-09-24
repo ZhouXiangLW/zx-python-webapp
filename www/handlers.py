@@ -76,6 +76,14 @@ def siginin():
 		'__template__':'signin.html'
 	}
 	
+@get('/signout')
+def signout(request):
+	referer = request.headers.get('Referer')
+	r = web.HTTPFound(referer or '/')
+	r.set_cookie(COOKIE_NAME, '-deleted-', max_age = 0, httponly = True)
+	logging.info('user signed out.')
+	return r
+	
 @get('/api/users')
 async def api_get_user(*, page='1'):
 	users = await User.findAll(orderBy='created_at desc')
