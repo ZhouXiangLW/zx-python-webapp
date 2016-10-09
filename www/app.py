@@ -12,7 +12,7 @@ from handlers import cookie2user, COOKIE_NAME
 
 	
 def datetime_filter(t):
-    delta = int(time.time() - t)
+    delta = int(time.time()-t)
     if delta < 60:
         return u'1分钟前'
     if delta < 3600:
@@ -59,7 +59,6 @@ def logger_factory(app, handler):
 async def auth_factory(app, handler):
 	async def auth(request):
 		logging.info('check user:%s %s' % (request.method, request.path))
-		print('###########check user:%s %s' % (request.method, request.path))
 		request.__user__ = None
 		cookie_str = request.cookies.get(COOKIE_NAME)
 		if cookie_str:
@@ -133,9 +132,9 @@ async def init(loop):
 	add_routes(app, 'handlers')
 	add_static(app)
 	srv = await loop.create_server(app.make_handler(),'0.0.0.0',9000)
-	logging.info('server started at http://127.0.0.1:9000...')
+	logging.info('server started at http://0.0.0.0:9000...')
 	return srv
-	
+
 loop = asyncio.get_event_loop()
 loop.run_until_complete(init(loop))
 loop.run_forever()

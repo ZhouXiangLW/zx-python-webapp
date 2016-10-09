@@ -177,6 +177,7 @@ class Model(dict, metaclass=ModelMetaclass):
 		rows = await execute(self.__insert__, args)
 		if rows != 1:
 			logging.warn('failed to insert record:affected rows:%s'%rows)
+		return 'success'
 	
 	async def update(self):
 		args = list(map(self.getValue, self.__fields__))
@@ -200,7 +201,7 @@ class Model(dict, metaclass=ModelMetaclass):
 			sql.append(where)
 		if args is None:
 			args = []
-		orderBy = kw.get('oederBy', None)
+		orderBy = kw.get('orderBy', None)
 		if orderBy:
 			sql.append('order by')
 			sql.append(orderBy)
@@ -212,9 +213,21 @@ class Model(dict, metaclass=ModelMetaclass):
 				args.append(limit)
 			elif isinstance(limit, tuple) and len(limit) == 2:
 				sql.append('?,?')
-				args.append(limit)
+				args.extend(limit)
 			else:
 				raise ValueError('Invalid limit value: %s' % str(limit))
 		rs = await select(' '.join(sql), args)
-		print(rs)
 		return [cls(**r) for r in rs]
+		
+	async def findNumber(cls, selectField, where=None, args=None):
+		' find number by select and where. '
+		sql = ['select %s _num_ from `%s`' % (selectField, cls.__table__)]
+		if where:
+			sql.append('where')
+			sql.append(where)
+		rs = await select(' '.join(sql), args, 1)
+		if len(rs) == 0:
+			return None
+		return rs[0]['_num_']
+		
+		

@@ -13,11 +13,8 @@ class User(Model):
 @asyncio.coroutine	
 def test():
 	yield from create_pool(loop,user = 'root',password = 'zxzx',db = 'orm_test',host = '127.0.0.1')
-	u = User(id = 337, name = 'zxlw')
-	#yield from u.save()
-	yield from u.findAll()
-	yield from destory_pool()
-	
+	l = yield from User.findNumber(User, 'count(id)');
+	print(l)
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(test())

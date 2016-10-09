@@ -13,13 +13,22 @@
 			</article>
 			<hr class="uk-article-divider">
 		{% endfor %}
+		<div v-component="pagination" v-with="page"></div>
+		<a href="/manage/blogs/create" class="uk-button uk-button-primary"><i class="uk-icon-plus"></i> 发表新日志</a>
 	</div>
-	
+
 	<div class="uk-width-medium-1-4">
+		<div class="uk-panel uk-panel-box">
+            <div class="uk-text-center">
+                <img class="uk-border-circle" width="120" height="120" src="{{ __user__.image  }}">
+                <h3>{{ __user__.name }}</h3>
+				<h3>欢迎来到我的个人博客</h3>
+            </div>
+        </div>
 		<div class="uk-panel uk-panel-header">
 			<h3 class="uk-panel-title">友情链接</h3>
 			<ul class="uk-list uk-list-line">
-				<li><i class="uk-icon-thumbs-o-up"></i> <a target="_blank" href="#">编程</a></li>
+				<li><i class="uk-icon-thumbs-o-up"></i> <a target="_blank" href="http://www.getuikit.net/">UIKit</a></li>
 				<li><i class="uk-icon-thumbs-o-up"></i> <a target="_blank" href="#">读书</a></li>
 				<li><i class="uk-icon-thumbs-o-up"></i> <a target="_blank" href="#">Python教程</a></li>
 				<li><i class="uk-icon-thumbs-o-up"></i> <a target="_blank" href="#">Git教程</a></li>
