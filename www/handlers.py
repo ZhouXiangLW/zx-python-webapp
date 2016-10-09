@@ -227,7 +227,6 @@ async def api_create_blogs(request, *, name, content):
 @post('/api/blogs/{id}/delete')
 async def api_blog_delete(id):
 	blog = await Blog.find(id)
-	print(blog.name)
 	if not blog:
 		raise APIResourceNotFoundError('没有找到博客')
 	await Blog.remove(blog)
@@ -243,11 +242,28 @@ async def creat_comments(request, *, content, id):
 	await comment.save();
 	return comment 
 
+#删除评论函数	
+@post('/api/comments/{id}/delete')
+async def api_comment_delete(id):
+	comment = await Comment.find(id)
+	if not comment:
+		raise APIResourceNotFoundError('没有找到该挑评论')
+	await Comment.remove(comment)
+	return comment
+
 #请求日志管理页面
 @get('/manage/blogs')
 def manage_blogs(*, page=1):
 	return{
 		'__template__':'manage_blogs.html',
+		'page_index':get_page_index(page)
+	}
+	
+#请求用户管理页面
+@get('/manage/comments')
+def manage_comments(*, page=1):
+	return{
+		'__template__':'manage_comments.html',
 		'page_index':get_page_index(page)
 	}
 	
@@ -275,6 +291,16 @@ async def api_blogs(*, page='1'):
 		return dict(page=p, blogs=())
 	blogs = await Blog.findAll(orderBy='created_at desc', limit=(p.offset, p.limit))
 	return dict(page=p, blogs=blogs)
+	
+@get('/api/comments')
+async def api_comments(*, page='1'):
+	page_index = get_page_index(page)
+	num = await Comment.findNumber(Comment, 'count(id)')
+	p = Page(num, page_index)
+	if num == 0:
+		return dict(page=p, comments=())
+	comments = await Comment.findAll(orderBy='created_at desc', limit=(p.offset, p.limit))
+	return dict(page=p, comments=comments)
 	
 
 
