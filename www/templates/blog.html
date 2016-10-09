@@ -15,7 +15,6 @@ $(function () {
         if (content==='') {
             return $form.showFormError('请输入评论内容！');
         }
-		alert('按键生效')
         $form.postJSON(comment_url, { content: content }, function (err, result) {
             if (err) {
                 return $form.showFormError(err);
