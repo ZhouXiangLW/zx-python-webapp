@@ -2,6 +2,16 @@
 
 {% block title %}日志{% endblock %}
 
+{% block beforehead %}
+
+
+{% endblock %}
+
+{% block section %}
+	<li class="uk-active"><a href="/"><i class="uk-icon-home"></i>日志</a></li>
+	<li><a href="/manage/blogs"><i class="uk-icon-wrench"></i>管理</a></li>
+{% endblock %}
+
 {% block content %}
 	<div class="uk-width-medium-3-4">
 		{% for blog in blogs %}
@@ -13,7 +23,7 @@
 			</article>
 			<hr class="uk-article-divider">
 		{% endfor %}
-		<div v-component="pagination" v-with="page"></div>
+		{{ pagination('/?page=', page) }}
 		<a href="/manage/blogs/create" class="uk-button uk-button-primary"><i class="uk-icon-plus"></i> 发表新日志</a>
 	</div>
 

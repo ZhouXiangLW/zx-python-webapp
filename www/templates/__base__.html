@@ -1,4 +1,20 @@
 <!DOCTYPE HTML>
+
+{% macro pagination(url, page) %}
+    <ul class="uk-pagination">
+        {% if page.has_previous %}
+            <li><a href="{{ url }}{{ page.page_index - 1 }}"><i class="uk-icon-angle-double-left"></i></a></li>
+        {% else %}
+            <li class="uk-disabled"><span><i class="uk-icon-angle-double-left"></i></span></li>
+        {% endif %}
+            <li class="uk-active"><span>{{ page.page_index }}</span></li>
+        {% if page.has_next %}
+            <li><a href="{{ url }}{{ page.page_index + 1 }}"><i class="uk-icon-angle-double-right"></i></a></li>
+        {% else %}
+            <li class="uk-disabled"><span><i class="uk-icon-angle-double-right"></i></span></li>
+        {% endif %}
+    </ul>
+{% endmacro %}
 <html>
 <head>
 	<meta charset="utf-8" />
@@ -16,12 +32,11 @@
 	{% block beforehead %}<!--beforehead-->{% endblock %}
 </head>
 <body>
-	<nav class="uk-navbar uk-navbar-attached uk-margin-bottom">
+	<nav class="uk-navbar uk-navbar-attached uk-margin-bottom uk-navbar-attached">
 		<div class="uk-container uk-container-center">
 			<a href="/" class="uk-navbar-brand">周翔的个人博客</a>
-			<ul class="uk-navbar-nav">
-				<li data-url="blogs"><a href="/"><i class="uk-icon-home"></i>日志</a></li>
-				<li data-url="manage_blogs"><a href="/manage/blogs"><i class="uk-icon-wrench"></i>管理</a></li>
+			<ul class="uk-navbar-nav ">
+				{% block section %}<!--section-->{% endblock %}
 			</ul>
 			<div class="uk-navbar-flip">
 				<ul class="uk-navbar-nav">
@@ -59,7 +74,7 @@
 					<a target="_blank" href="http://weibo.com/5327578848/profile?topnav=1&wvr=6&is_all=1" class="uk-icon-button uk-icon-weibo"></a>
 					<a target="_blank" href="http://github.com/ZhouXiangLW/zx-python-webapp" class="uk-icon-button uk-icon-github"></a>
 				</p>
-				<p>Powered by<a href="#"> 周翔的个人博客 </a>.Copyrite &copy;2016.[<a href="/manage/" target="blank">Manage</a>]</p>
+				<p>Powered by<a href="#"> 周翔的个人博客 </a>.Copyrite &copy;2016.[<a href="/manage/blogs" target="blank">Manage</a>]</p>
 				<p><a href="#" target="_blank">www.zx.com</a>.ALL rights reserved.</p>
 				<a target="blank" href="#"><i class="uk-icon-html5" style="font-size:64px;color:#444;"></i></a>
 			</div>

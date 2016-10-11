@@ -73,11 +73,15 @@ async def cookie2user(cookie_str):
 
 #请求主页
 @get('/')
-async def index(request):
-	blogs = await Blog.findAll(orderBy='created_at desc')
+async def index(*, page=1):
+	page_index = get_page_index(page)
+	num = await Blog.findNumber(Blog, 'count(id)')
+	page = Page(num, page_index, page_size=5)
+	blogs = await Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
 	return{
 		'__template__': 'blogs.html',
-		'blogs': blogs
+		'blogs': blogs,
+		'page':page
 	}
 	
 
@@ -157,6 +161,15 @@ def signout(request):
 	r.set_cookie(COOKIE_NAME, '-deleted-', max_age = 0, httponly = True)
 	logging.info('user signed out.')
 	return r
+	
+#删除用户函数
+@post('/api/users/{id}/delete')
+async def api_user_delete(id):
+	user = await User.find(id)
+	if not user:
+		raise APIResourceNotFoundError('用户不存在')
+	await User.remove(user)
+	return user
 
 #请求编辑日志页面
 @get('/manage/blogs/create')
@@ -259,11 +272,19 @@ def manage_blogs(*, page=1):
 		'page_index':get_page_index(page)
 	}
 	
-#请求用户管理页面
+#请求评论管理页面
 @get('/manage/comments')
 def manage_comments(*, page=1):
 	return{
 		'__template__':'manage_comments.html',
+		'page_index':get_page_index(page)
+	}
+	
+#请求用户管理页面
+@get('/manage/users')
+def manage_users(*, page=1):
+	return{
+		'__template__':'manage_users.html',
 		'page_index':get_page_index(page)
 	}
 	
@@ -277,10 +298,11 @@ async def api_get_blog(*, id):
 
 @get('/api/users')
 async def api_get_user(*, page='1'):
+	page_index = get_page_index(page)
+	num = await User.findNumber(User, 'count(id)')
+	p = Page(num, page_index)
 	users = await User.findAll(orderBy='created_at desc')
-	for u in users:
-		u.password = '******'
-	return dict(users=users)
+	return dict(page=p,users=users)
 
 @get('/api/blogs')
 async def api_blogs(*, page='1'):
