@@ -78,6 +78,8 @@ async def index(*, page=1):
 	num = await Blog.findNumber(Blog, 'count(id)')
 	page = Page(num, page_index, page_size=5)
 	blogs = await Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
+	for blog in blogs:
+		blog.comment_count = await Comment.findNumber(Comment, 'count(id)', 'blog_id=?', [blog.id])
 	return{
 		'__template__': 'blogs.html',
 		'blogs': blogs,

@@ -19,12 +19,17 @@
 				<h2><a href="/blog/{{blog.id}}">{{blog.name}}</a></h2>
 				<p class="uk-article-meta">发表于{{blog.created_at|datetime}}</p>
 				<p>{{blog.summary}}</p>
-				<p><a href="/blog/{{blog.id}}">继续阅读<i class="uk-icon-double-right"></i></a></p>
+				<div class="uk-navbar-flip ">
+					<a href="/blog/{{blog.id}}">继续阅读 <i class="uk-icon-angle-double-right"></i></a>
+				</div>
+				<div class="uk-navbar-nav ">
+					<i class="uk-icon-comments-o uk-article-meta"> 评论数 {{blog.comment_count}}</i>
+				</div>
 			</article>
 			<hr class="uk-article-divider">
 		{% endfor %}
 		{{ pagination('/?page=', page) }}
-		<a href="/manage/blogs/create" class="uk-button uk-button-primary"><i class="uk-icon-plus"></i> 发表新日志</a>
+		<a href="/manage/blogs/create" class="uk-button uk-button-primary"><i class="uk-icon-plus"></i>发表新日志</a>
 	</div>
 
 	<div class="uk-width-medium-1-4">
