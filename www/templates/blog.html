@@ -38,7 +38,7 @@ $(function () {
         <article class="uk-article">
 			<p class="uk-article-title">{{ blog.name|safe }}</p>
             <p class="uk-article-meta">发表于{{ blog.created_at|datetime }}</p>
-            <p><td style="line-height:20px;">{{ blog.html_content|safe }}</td></p>
+            <p><td>{{  html_content|safe }}</td></p>
         </article>
 
         <hr class="uk-article-divider">

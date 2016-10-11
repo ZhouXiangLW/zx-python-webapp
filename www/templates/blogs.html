@@ -23,7 +23,8 @@
 					<a href="/blog/{{blog.id}}">继续阅读 <i class="uk-icon-angle-double-right"></i></a>
 				</div>
 				<div class="uk-navbar-nav ">
-					<i class="uk-icon-comments-o uk-article-meta"> 评论数 {{blog.comment_count}}</i>
+					<li class="uk-icon-comments-o uk-article-meta"> 评论数 {{blog.comment_count}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+					<li class="uk-icon-eye uk-article-meta"> 阅读量 {{blog.rd_times}}</li>
 				</div>
 			</article>
 			<hr class="uk-article-divider">
@@ -36,7 +37,10 @@
 		<div class="uk-panel uk-panel-box">
             <div class="uk-text-center">
                 <img class="uk-border-circle" width="120" height="120" src="{{ __user__.image  }}">
-                <h3>{{ __user__.name }}</h3>
+				<p>
+					<a target="_blank" href="http://weibo.com/5327578848/profile?topnav=1&wvr=6&is_all=1" class="uk-icon-button uk-icon-weibo"></a>
+					<a target="_blank" href="http://github.com/ZhouXiangLW/zx-python-webapp" class="uk-icon-button uk-icon-github"></a>
+				</p>
 				<h3>欢迎来到我的个人博客</h3>
             </div>
         </div>

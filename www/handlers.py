@@ -213,14 +213,19 @@ async def api_update_blog(id, request, *, name, content):
 @get('/blog/{id}')
 async def get_blog(id):
 	blog = await Blog.find(id)
-	blog.html_content = markdown2.markdown(blog.content)
+	html_content = markdown2.markdown(blog.content)
+	rd_times = blog.rd_times + 1
+	blog.rd_times = rd_times
+	await blog.update()
 	comments = await Comment.findAll('blog_id=?', [id], orderBy='created_at desc')
+	
 	for c in comments:
 		c.html_content = text2html(c.content)
 	return{
 		'__template__': 'blog.html',
 		'blog': blog,
-		'comments':comments
+		'comments':comments,
+		'html_content':html_content
 	}
 	
 #日志保存函数
