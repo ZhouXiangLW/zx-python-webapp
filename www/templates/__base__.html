@@ -1,5 +1,29 @@
 <!DOCTYPE HTML>
 
+<!--   
+                   _ooOoo_
+                  o8888888o
+                  88" . "88
+                  (| -_- |)
+                  O\  =  /O
+               ____/`---'\____
+             .'  \\|     |//  `.
+            /  \\|||  :  |||//  \
+           /  _||||| -:- |||||-  \
+           |   | \\\  -  /// |   |
+           | \_|  ''\---/''  |   |
+           \  .-\__  `-`  ___/-. /
+         ___`. .'  /--.--\  `. . __
+      ."" '<  `.___\_<|>_/___.'  >'"".
+     | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+     \  \ `-.   \_ __\ /__ _/   .-` /  /
+======`-.____`-.___\_____/___.-`____.-'======
+                   `=---='
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         佛祖保佑       永无BUG   
+ -->
+
+
 {% macro pagination(url, page) %}
     <ul class="uk-pagination">
         {% if page.has_previous %}
@@ -20,20 +44,36 @@
 	<meta charset="utf-8" />
 	{% block meta %}<!-- block meta  -->{% endblock %}
 	<title>{% block title %} ? {% endblock %} -周翔的个人博客</title>
-	<link rel="stylesheet" href="/static/css/uikit.min.css">
-	<link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
+	<link rel="stylesheet" href="/static/css/uikit.min.css"/>
 	<link rel="stylesheet" href="/static/css/awesome.css"/>
+	<link rel="stylesheet" href="/static/css/editormd.css"/>
 	<script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/sha1.min.js"></script>
     <script src="/static/js/uikit.min.js"></script>
 	<script src="/static/js/sticky.min.js"></script>
 	<script src="/static/js/vue.min.js"></script>
     <script src="/static/js/awesome.js"></script>
+	<script src="/static/js/editormd.js"></script>
+	
+	<!-- Codemirror 和 marked 依赖 -->
+    <link rel="stylesheet" href="/static/codemirror/lib/codemirror.css">
+    <script src="/static/codemirror/lib/codemirror.js"></script>
+    <script src="/static/codemirror/mode/markdown/markdown.js"></script>
+    <script src="/static/codemirror/addon/mode/overlay.js"></script>
+    <script src="/static/codemirror/mode/xml/xml.js"></script>
+    <script src="/static/codemirror/mode/gfm/gfm.js"></script>
+    <script src="/static/js/marked.min.js"></script>
+	<script src="/static/js/commommark.js"></script>
+
+    <!-- HTML 编辑器的 CSS 与 JavaScript -->
+    <link rel="stylesheet" href="/static/css/htmleditor.css">
+    <script src="/static/js/htmleditor.js"></script>
+	
 	{% block beforehead %}<!--beforehead-->{% endblock %}
 </head>
 <body>
-	<nav class="uk-navbar uk-navbar-attached uk-margin-bottom uk-navbar-attached">
-		<div class="uk-container uk-container-center">
+	<nav class="uk-navbar uk-navbar-attached uk-margin-bottom uk-width-1-1">
+		<div class="uk-container uk-container-center ">
 			<a href="/" class="uk-navbar-brand uk-visible-large">周翔的个人博客</a>
 			<ul class="uk-navbar-nav ">
 				{% block section %}<!--section-->{% endblock %}

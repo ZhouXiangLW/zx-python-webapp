@@ -17,6 +17,7 @@ COOKIE_NAME = 'awesession'
 _COOKIE_KEY = configs.session.secret
 
 def check_admin(request):
+	print(request.__user__)
 	if request.__user__ is None or not request.__user__.admin:
 		raise APIPermissionError('您没有权限')
 		
@@ -70,6 +71,12 @@ async def cookie2user(cookie_str):
 		logging.info(e)
 		return None
 	
+	
+@get('/test')
+def test():
+	return{
+		'__template__': 'test2.html'
+	}
 
 #请求主页
 @get('/')

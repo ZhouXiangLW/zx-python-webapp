@@ -15,7 +15,7 @@
 {% block content %}
 	<div class="uk-width-medium-3-4">
 		{% for blog in blogs %}
-			<article class="uk-article">
+			<article class="uk-article uk-animation-slide-left">
 				<h2><a href="/blog/{{blog.id}}">{{blog.name}}</a></h2>
 				<p class="uk-article-meta">发表于{{blog.created_at|datetime}}</p>
 				<p>{{blog.summary}}</p>
@@ -30,13 +30,13 @@
 			<hr class="uk-article-divider">
 		{% endfor %}
 		{{ pagination('/?page=', page) }}
-		<a href="/manage/blogs/create" class="uk-button uk-button-primary"><i class="uk-icon-plus"></i>发表新日志</a>
+		<a href="/manage/blogs/create" class="uk-button uk-button-primary"><i class="uk-icon-plus uk-animation-slide-right"></i>发表新日志</a>
 	</div>
 
 	<div class="uk-width-medium-1-4">
 		<div class="uk-panel uk-panel-box">
             <div class="uk-text-center">
-                <img class="uk-border-circle" width="120" height="120" src="{{ __user__.image  }}">
+                <img class="uk-border-circle uk-animation-scale-up" width="120" height="120" src="/static/img/zx.png">
 				<p>
 					<a target="_blank" href="http://weibo.com/5327578848/profile?topnav=1&wvr=6&is_all=1" class="uk-icon-button uk-icon-weibo"></a>
 					<a target="_blank" href="http://github.com/ZhouXiangLW/zx-python-webapp" class="uk-icon-button uk-icon-github"></a>
@@ -44,7 +44,7 @@
 				<h3>欢迎来到我的个人博客</h3>
             </div>
         </div>
-		<div class="uk-panel uk-panel-header">
+		<div class="uk-panel uk-panel-header uk-animation-slide-right">
 			<h3 class="uk-panel-title">友情链接</h3>
 			<ul class="uk-list uk-list-line">
 				<li><i class="uk-icon-thumbs-o-up"></i> <a target="_blank" href="http://www.getuikit.net/">UIKit</a></li>
