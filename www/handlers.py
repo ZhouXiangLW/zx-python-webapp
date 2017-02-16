@@ -11,6 +11,8 @@ from config import configs
 
 from aiohttp import web
 
+from urllib import request
+
 import markdown2
 
 COOKIE_NAME = 'awesession'
@@ -226,8 +228,8 @@ async def get_blog(id):
 	await blog.update()
 	comments = await Comment.findAll('blog_id=?', [id], orderBy='created_at desc')
 	
-	for c in comments:
-		c.html_content = text2html(c.content)
+	# for c in comments:
+		# c.html_content = text2html(c.content)
 	return{
 		'__template__': 'blog.html',
 		'blog': blog,
@@ -337,6 +339,19 @@ async def api_comments(*, page='1'):
 		return dict(page=p, comments=())
 	comments = await Comment.findAll(orderBy='created_at desc', limit=(p.offset, p.limit))
 	return dict(page=p, comments=comments)
+	
+@get('/api/get_bing_photo')
+async def api_get_bing_photo():
+	'Get photo from Bing '
+	url = 'http://www.bing.com'
+	f = request.urlopen(url)
+	html = f.read().decode()
+	f.close()
+	a = html[html.index('/az/hprichbg'):]
+	path = a[:a.index('.jpg')+4]
+	url = url + path
+	return dict(url=url)
+	
 	
 
 

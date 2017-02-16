@@ -1,4 +1,4 @@
-import logging; logging.basicConfig(level=logging.INFO)
+﻿import logging; logging.basicConfig(level=logging.INFO)
 
 import asyncio, os, json, time
 from datetime import datetime
@@ -10,7 +10,7 @@ import orm
 from handlers import cookie2user, COOKIE_NAME
 
 
-
+	
 def datetime_filter(t):
     delta = int(time.time()-t)
     if delta < 60:
@@ -24,7 +24,7 @@ def datetime_filter(t):
     dt = datetime.fromtimestamp(t)
     return u'%s年%s月%s日' % (dt.year, dt.month, dt.day)
 
-def init_jinja2(app,**kw):
+def init_jinja2(app, **kw):
     logging.info('init jinja2...')
     options = dict(
         autoescape = kw.get('autoescape', True),
@@ -44,7 +44,7 @@ def init_jinja2(app,**kw):
         for name, f in filters.items():
             env.filters[name] = f
     app['__templating__'] = env
-
+	
 
 @asyncio.coroutine
 def logger_factory(app, handler):
@@ -55,7 +55,7 @@ def logger_factory(app, handler):
         # 继续处理请求:
         return (yield from handler(request))
     return logger
-
+	
 async def auth_factory(app, handler):
 	async def auth(request):
 		logging.info('check user:%s %s' % (request.method, request.path))
@@ -82,13 +82,13 @@ async def data_factory(app, handler):
 				logging.info('request form: %s' % str(request.__data__))
 		return (await handler(request))
 	return parse_data
-
+	
 async def response_factory(app, handler):
 	async def response(request):
 		logging.info('Response handler...')
 		r = await handler(request)
 		if isinstance(r, web.StreamResponse):
-			return r
+			return r 
 		if isinstance(r, bytes):
 			resp = web.Response(body=r)
 			resp.content_type = 'application/octet-stream'
@@ -131,8 +131,8 @@ async def init(loop):
 	init_jinja2(app, filters=dict(datetime=datetime_filter))
 	add_routes(app, 'handlers')
 	add_static(app)
-	srv = await loop.create_server(app.make_handler(),'127.0.0.1',9000)
-	logging.info('server started at http://127.0.0.1:9000...')
+	srv = await loop.create_server(app.make_handler(),'0.0.0.0',9000)
+	logging.info('server started at http://0.0.0.0:9000...')
 	return srv
 
 loop = asyncio.get_event_loop()
