@@ -6,12 +6,6 @@ server {
     error_log  /srv/awesome/log/error_log;
 
 
-    # 处理静态文件/favicon.ico:
-	#没有这个文件uso一这一段删除了
-    #location /favicon.ico {
-    #    root /srv/awesome/www;
-    #}
-
     # 处理静态资源:
     location ~ ^\/static\/.*$ {
         root /srv/awesome/www;

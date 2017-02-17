@@ -15,6 +15,8 @@ from urllib import request
 
 import markdown2
 
+import simplejson
+
 COOKIE_NAME = 'awesession'
 _COOKIE_KEY = configs.session.secret
 
@@ -340,8 +342,8 @@ async def api_comments(*, page='1'):
 	comments = await Comment.findAll(orderBy='created_at desc', limit=(p.offset, p.limit))
 	return dict(page=p, comments=comments)
 	
-@get('/api/get_bing_photo')
-async def api_get_bing_photo():
+@get('/api/get_bing_photo/{callback}')
+async def api_get_bing_photo(callback):
 	'Get photo from Bing '
 	url = 'http://www.bing.com'
 	f = request.urlopen(url)
@@ -350,8 +352,8 @@ async def api_get_bing_photo():
 	a = html[html.index('/az/hprichbg'):]
 	path = a[:a.index('.jpg')+4]
 	url = url + path
-	return dict(url=url)
-	
+	data = simplejson.dumps(dict(url=url))
+	return callback + '(' + data + ')'
 	
 
 
