@@ -1,0 +1,164 @@
+{% extends '__bs_base__.html' %}
+{% block title %}{{blog.name}}{% endblock %}
+{% block css %}
+<style type="text/css">
+#image{
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
+pre{
+  background-color: #f0f0f0;
+  border-radius: 0px;
+  border-color: #ccc;
+  overflow-x: auto;
+  max-height: 400px;
+}
+pre code{
+  white-space: pre;
+}
+.hljs{
+  background-color: #f0f0f0;
+}
+blockquote {
+    font-size: 16px;
+    line-height: 1.7;
+    border-left: 5px solid #aaa;
+    background-color: #f0f0f0
+}
+h1{
+  font-size: 26px;
+}
+h2{
+  margin-top: 30px;
+  font-size: 24px;
+}
+h3{
+  font-size: 22px;
+}
+h4{
+  font-size: 20px;
+}
+h5{
+  font-size: 18px;
+}
+h6{
+  font-size: 16px;
+}
+blockquote p{
+  font-style: normal;
+}
+:not(pre)>code, :not(pre)>kbd, :not(pre)>samp{
+  white-space: normal;
+}
+</style>
+
+{% endblock %}
+{% block navbar %}
+<li><a href="/"><span class="glyphicon glyphicon-home"></span> 首页</a></li>
+<li class="active"><a href="/bs/blogs"><span class="glyphicon glyphicon-book"></span> 日志</a></li>
+{% if __user__.admin %}
+<li><a href="/bs/manage/blogs"><span class="glyphicon glyphicon-wrench"></span> 管理</a></li>
+{% endif %}
+<li><a href="/about"><span class="glyphicon glyphicon-info-sign"></span> 关于</a></li>
+{% endblock %}
+{% block content %}
+<div class="container" style="margin-top: 50px">
+	<div style="padding: 10px"></div>
+	<div class="row">
+  	<div class="col-md-8">
+  			<div class="panel-body">
+          <h1>{{blog.name}}</h1>
+          <hr />
+  				<p><td>{{  html_content|safe }}</td></p>
+  			</div>
+  	     <hr />
+    <!-- 评论部分 -->
+    {% if __user__ %}
+        <h3>发表评论</h3>
+
+        <article class="uk-comment">
+            <header class="uk-comment-header">
+                <img class="uk-comment-avatar uk-border-circle" width="50" height="50" src="{{__user__.image}}">
+                <h4 class="uk-comment-title">{{ __user__.name }}</h4>
+            </header>
+            <div class="uk-comment-body">
+                <form id="form-comment" class="uk-form">
+                    <div class="uk-alert uk-alert-danger uk-hidden"></div>
+                    <div class="uk-form-row">
+                        <textarea rows="6" placeholder="说点什么吧" style="width:100%;resize:none;"></textarea>
+                    </div>
+                    <div class="uk-form-row">
+                        <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-comment"></i> 发表评论</button>
+                    </div>
+                </form>
+            </div>
+        </article>
+
+        <hr class="uk-article-divider">
+    {% endif %}
+
+        <h3>最新评论</h3> 
+
+        <ul class="uk-comment-list">
+            {% for comment in comments %}
+            <li>
+                <article class="uk-comment">
+                    <header class="uk-comment-header">
+                        <img class="uk-comment-avatar uk-border-circle" width="50" height="50" src="{{ comment.user_image }}">
+                        <h4 class="uk-comment-title">{{ comment.user_name }} {% if comment.user_id==blog.user_id %}(作者){% endif %}</h4>
+                        <p class="uk-comment-meta">{{ comment.created_at|datetime }}</p>
+                    </header>
+                    <div class="uk-comment-body">
+                        {{ comment.html_content|safe }}
+                    </div>
+                </article>
+            </li>
+            {% else %}
+            <p>还没有人评论...</p>
+            {% endfor %}
+        </ul>
+      </div>
+  	<div class="col-md-4">
+  		<div class="panel panel-default" style="padding: 10px">
+        <div class="panel-body" style="text-align:center;">
+            <img class="img-circle" width="120" height="120" src="/static/img/zx.png" />
+            <hr />
+            <h4>欢迎来到我的个人博客</h4>
+        </div>
+       </div>
+       <div class="panel panel-default" style="padding: 10px">
+          <h4>友情链接</h4>
+          <ul class="list-group">
+            <li class="list-group-item"><span class="glyphicon glyphicon-hand-right"></span> <a target="_blank" href="http://www.bootcss.com/">BootStrap</a></li>
+            <li class="list-group-item"><span class="glyphicon glyphicon-hand-right"></span> <a target="_blank" href="#">读书</a></li>
+            <li class="list-group-item"><span class="glyphicon glyphicon-hand-right"></span> <a target="_blank" href="#">Python教程</a></li>
+            <li class="list-group-item"><span class="glyphicon glyphicon-hand-right"></span> <a target="_blank" href="#">Git教程</a></li>
+          </ul>
+       </div>
+  	</div>
+	</div>
+</div>
+<script>
+hljs.initHighlightingOnLoad();
+var comment_url = '/api/blogs/{{ blog.id }}/comments';
+$(function () {
+    var $form = $('#form-comment');
+    $form.submit(function (e) {
+        e.preventDefault();
+        $form.showFormError('');
+        var content = $form.find('textarea').val().trim();
+        if (content==='') {
+            return $form.showFormError('请输入评论内容！');
+        }
+        $form.postJSON(comment_url, { content: content }, function (err, result) {
+            if (err) {
+                return $form.showFormError(err);
+            }
+            refresh();
+        });
+    });
+});
+</script>
+
+{% endblock %}

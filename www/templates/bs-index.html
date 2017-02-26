@@ -1,0 +1,108 @@
+    {% extends '__bs_base__.html' %}
+    {% block title %}首页 {% endblock %}
+    {% block css %}
+    <style type="text/css">
+      #info{
+        padding-left: 0px;
+        padding-right: 0px;
+      }
+      .jumbotron{
+        margin-bottom:10px; 
+        border-radius: 3px
+      }
+      h4{
+        padding-left: 15px;
+      }
+    </style>
+    {% endblock %}
+
+    {% block navbar %}
+    <li class="active"><a href="/"><span class="glyphicon glyphicon-home"></span> 首页</a></li>
+    <li><a href="/bs/blogs"><span class="glyphicon glyphicon-book"></span> 日志</a></li>
+    {% if __user__.admin %}
+    <li><a href="/bs/manage/blogs"><span class="glyphicon glyphicon-wrench"></span> 管理</a></li>
+    {% endif %}
+    <li><a href="/about"><span class="glyphicon glyphicon-info-sign"></span> 关于</a></li>
+    {% endblock %}
+
+    {% block content %}
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron container" style="margin-top: 60px ;">
+      <div class="container" style="color:white; height: 350px; ">
+        <h1>Make everyday different!</h1>
+        <p>This pictrue is come from <a target="_blank" style="color: #fff" href="http://cn.bing.com">Bing</a>,would you like to get it? </p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Get it Now &raquo;</a></p>
+      </div>
+    </div>
+
+    <div id="info" class="panel panel-default container">
+      <div class="panel-heading">
+        <h4><span class="glyphicon glyphicon-fire"></span> 最新文章</h4>
+      </div>
+      <div class="panel-body">
+      <div class="row">
+        {% for blog in blogs %}
+        <div class="col-md-4">
+          <div class="panel ">
+            <h4><a href="/blog/{{blog.id}}">{{blog.shortname}}</a></h4>
+            <hr />
+            <div class="panel-body" style="WORD-WRAP: break-word;word-break:break-all"><p>{{blog.summary}}</p></div>
+            <p style="margin-left: 15px;"><a class="btn btn-default" href="/blog/{{blog.id}}" role="button">View details &raquo;</a></p>
+          </div>
+          
+        </div>
+
+        {% endfor %}
+      </div>
+      </div>
+      </div>
+      </div>
+
+      
+
+      <div id="info" class="container panel panel-default">
+      <div class="panel-heading" style="height:63px">
+        <h4 style="width: 40%; margin-right:10px; float:left;"><span class="glyphicon glyphicon-hand-right"></span> 开心一刻</h4>
+        <p style="display: block;float: right;margin-top: 10px;margin-bottom: 10px;"><a href="javascript:getJoke();"><span class="glyphicon glyphicon-refresh"></span>换一批</a></p>
+      </div>
+      <div class="panel-body">
+      <div class="row">
+        <div style="margin-bottom: 20px" id="firstjoke" class="col-md-4"></div>
+        <div id="secondjoke" class="col-md-4"></div>
+        <div id="thirdjoke" class="col-md-4"></div>
+      </div>
+      </div>
+      <div id="panel-footer"></div>
+      </div>
+
+      <div id="info" class="container panel panel-default">
+      <div class="panel-heading">
+        <h4><span class="glyphicon glyphicon-eye-open"></span> 天下事(即将推出)</h4>
+      </div>
+      <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+      </div>
+      </div>
+      </div>
+      <script type="text/javascript">
+        $(function(){
+          setBgPic();
+          getJoke();
+        })
+      </script>
+      {% endblock %}

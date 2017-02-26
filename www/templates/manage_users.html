@@ -77,7 +77,7 @@ $(function() {
                 </tr>
             </thead>
             <tbody>
-                <tr v-repeat="user: users" >
+                <tr v-for="user in users" >
                     <td>
                         <span v-text="user.name"></span>
                     </td>	
@@ -85,7 +85,7 @@ $(function() {
                         <span v-text="user.created_at.toDateTime()"></span>
                     </td>
                     <td>
-                        <a href="#0" v-on="click: delete_user(user)"><i class="uk-icon-trash-o"></i>
+                        <a href="#0" v-on:click="delete_user(user)"><i class="uk-icon-trash-o"></i>
                     </td>
                 </tr>
             </tbody>

@@ -20,6 +20,34 @@ import simplejson
 COOKIE_NAME = 'awesession'
 _COOKIE_KEY = configs.session.secret
 
+class MarkDownFilter(object):
+
+	def __init__(self ,md, *symbols):
+
+		self.symbols = symbols or ['#','>','`','*','+','-','[',']'] 
+		self.md = '''%s''' % md;
+
+	def checkMd(self,str):
+
+		return str not in self.symbols
+
+
+	def Parser(self):
+		l = list(filter(self.checkMd, list(self.md)))
+		return ''.join(l)
+
+def getSummary(index,details):
+	while True:
+		try:
+			summary = MarkDownFilter(details).Parser().encode()[:index].decode()
+		except:
+			index = index + 1
+		else:
+			summary = summary + '...'
+			break
+	return summary
+
+
 def check_admin(request):
 	print(request.__user__)
 	if request.__user__ is None or not request.__user__.admin:
@@ -79,11 +107,11 @@ async def cookie2user(cookie_str):
 @get('/test')
 def test():
 	return{
-		'__template__': 'test2.html'
+		'__template__': 'index.html'
 	}
 
 #请求主页
-@get('/')
+@get('/uk')
 async def index(*, page=1):
 	page_index = get_page_index(page)
 	num = await Blog.findNumber(Blog, 'count(id)')
@@ -112,7 +140,6 @@ _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 @post('/api/users')
 async def api_register_user(*, email, name, passwd):
-	print('begin register')
 	if not name or not name.strip():
 		raise APIValueError('name')
 	if not email or not _RE_EMAIL.match(email):
@@ -230,10 +257,10 @@ async def get_blog(id):
 	await blog.update()
 	comments = await Comment.findAll('blog_id=?', [id], orderBy='created_at desc')
 	
-	# for c in comments:
-		# c.html_content = text2html(c.content)
+	for c in comments:
+		c.html_content = text2html(c.content)
 	return{
-		'__template__': 'blog.html',
+		'__template__': 'bs_blog.html',
 		'blog': blog,
 		'comments':comments,
 		'html_content':html_content
@@ -319,6 +346,7 @@ async def api_get_user(*, page='1'):
 	page_index = get_page_index(page)
 	num = await User.findNumber(User, 'count(id)')
 	p = Page(num, page_index)
+	p.totalPage = num // 10 + 1
 	users = await User.findAll(orderBy='created_at desc')
 	return dict(page=p,users=users)
 
@@ -327,6 +355,7 @@ async def api_blogs(*, page='1'):
 	page_index = get_page_index(page)
 	num = await Blog.findNumber(Blog, 'count(id)')
 	p = Page(num, page_index)
+	p.totalPage = num // 10 + 1
 	if num == 0:
 		return dict(page=p, blogs=())
 	blogs = await Blog.findAll(orderBy='created_at desc', limit=(p.offset, p.limit))
@@ -337,13 +366,14 @@ async def api_comments(*, page='1'):
 	page_index = get_page_index(page)
 	num = await Comment.findNumber(Comment, 'count(id)')
 	p = Page(num, page_index)
+	p.totalPage = num // 10 + 1
 	if num == 0:
 		return dict(page=p, comments=())
 	comments = await Comment.findAll(orderBy='created_at desc', limit=(p.offset, p.limit))
 	return dict(page=p, comments=comments)
 	
-@get('/api/get_bing_photo/{callback}')
-async def api_get_bing_photo(callback):
+@get('/api/get_bing_photo')
+async def api_get_bing_photo(*,callback=''):
 	'Get photo from Bing '
 	url = 'http://www.bing.com'
 	f = request.urlopen(url)
@@ -353,12 +383,106 @@ async def api_get_bing_photo(callback):
 	path = a[:a.index('.jpg')+4]
 	url = url + path
 	data = simplejson.dumps(dict(url=url))
-	return callback + '(' + data + ')'
-	
+	if callback:
+		return callback + '(' + data + ')'
+	else:
+		return data;
+
+@get('/api/get_qiubai')
+async def getQiubai(*,page=1,callback=''):
+
+	url = 'http://www.qiushibaike.com/text/page/' + str(page)
+	user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
+	headers = {'User-Agent':user_agent}
+	req = request.Request(url,headers = headers)
+	res = request.urlopen(req)
+	html = res.read().decode()
+	pattern = re.compile('<div class="content">(.*?)</div>',re.S)
+	items = re.findall(pattern,html)
+
+	data = simplejson.dumps(dict(items=items), ensure_ascii=False)
+	if callback:
+		return callback + '(' + data + ')'
+	else:
+		return data;
 
 
+#以下是新首页测试内容
+@get('/')
+async def get_bs_index():
+	page_index = get_page_index(1)
+	num = await Blog.findNumber(Blog, 'count(id)')
+	page = Page(num, page_index, page_size=3)
+	blogs = await Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
+	for blog in blogs:
+		blog.comment_count = await Comment.findNumber(Comment, 'count(id)', 'blog_id=?', [blog.id])
+		if len(blog.name) > 15:
+			blog.shortname = blog.name[:17] + '...'
+		else:
+			blog.shortname = blog.name
+		blog.summary = getSummary(270,blog.content)	
+	return{
+		'__template__': 'bs-index.html',
+		'blogs': blogs,
+		'page':page
+	}
 
+@get('/bs/blogs')
+async def get_bs_blogs(*, page=1):
+	page_index = get_page_index(page)
+	num = await Blog.findNumber(Blog, 'count(id)')
+	page = Page(num, page_index, page_size=5)
+	blogs = await Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
+	totalPage = num//5 + 1
+	for blog in blogs:
+		blog.comment_count = await Comment.findNumber(Comment, 'count(id)', 'blog_id=?', [blog.id])
+		blog.summary = getSummary(500,blog.content)
+	return{
+		'__template__': 'bs_blogs.html',
+		'totalPage': totalPage,
+		'blogs': blogs,
+		'page':page
+	}
 
+#请求日志管理页面
+@get('/bs/manage/blogs')
+def manage_bs_blogs(*, page=1):
+	return{
+		'__template__':'bs_manage_blogs.html',
+		'page_index':get_page_index(page)
+	}
+#请求评论管理页面
+@get('/bs/manage/comments')
+def manage_comments(*, page=1):
+	return{
+		'__template__':'bs_manage_comments.html',
+		'page_index':get_page_index(page)
+	}
+#请求用户管理页面
+@get('/bs/manage/users')
+def manage_users(*, page=1):
+	return{
+		'__template__':'bs_manage_users.html',
+		'page_index':get_page_index(page)
+	}
+
+#请求重新编辑日志页面
+@get('/bs/manage/blogs/edit')
+def manage_edit_blog(*, id):
+    return {
+        '__template__': 'bs_manage_blog_edit.html',
+        'id': id,
+        'action': '/api/blogs/%s' % id
+    }
+
+ #请求编辑日志页面
+@get('/bs/manage/blogs/create')
+def manage_create_blog():
+	return{
+		'__template__': 'bs_manage_blog_edit.html',
+		'id': '',
+		'action': '/api/blogs'
+	}
 
 
 

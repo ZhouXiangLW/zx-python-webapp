@@ -1,10 +1,10 @@
-/*
+﻿/*
  * custom css
  */
+
 a:hover, a:active {
     text-decoration: none;
 }
-
 #vm {
     display: none;
 }
@@ -15,3 +15,5 @@ a:hover, a:active {
     display: none;
     margin-bottom: 15px;
 }
+
+

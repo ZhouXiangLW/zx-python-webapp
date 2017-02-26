@@ -1,0 +1,139 @@
+{% extends '__bs_base__.html' %}
+{% block title %}日志{% endblock %}
+{% block css %}
+<style type="text/css">
+</style>
+{% endblock %}	
+
+    {% block navbar %}
+    <li><a href="/"><span class="glyphicon glyphicon-home"></span> 首页</a></li>
+    <li><a href="/bs/blogs"><span class="glyphicon glyphicon-book"></span> 日志</a></li>
+    {% if __user__.admin %}
+    <li class="active"><a href="/bs/manage/blogs"><span class="glyphicon glyphicon-wrench"></span> 管理</a></li>
+    {% endif %}
+    <li><a href="/about"><span class="glyphicon glyphicon-info-sign"></span> 关于</a></li>
+    {% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 50px">
+	<div style="padding: 10px;"></div>
+  <div class="panel">
+    <div class="panel-heading">
+       <ul class="breadcrumb">
+        <li><a href="/bs/manage/comments">评论</a></li>
+        <li class="active"><span>日志</span></li>
+        <li><a href="/bs/manage/users">用户</a></li>
+        <a style="display: block;float: right;" href="/bs/manage/blogs/create" class="btn "><span class="glyphicon glyphicon-plus"></span> 发表新日志</a>
+       </ul>
+    </div>
+    <div class="panel-body">
+      <div id="error">
+    </div>
+
+    <div id="loading">
+        <span class="glyphicon glyphicon-refresh"> 正在加载...</span>
+    </div>
+      <div id="vm">
+
+        <table class="table table-hover table-responsive table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th >标题 / 摘要</th>
+                    <th >作者</th>
+                    <th >创建时间</th>
+                    <th >操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="blog in blogs" >
+                    <td>
+                        <a target="_blank" v-bind:href=" '/blog/'+blog.id" v-text="blog.name"></a>
+                    </td>
+                    <td>
+                        <a target="_blank" v-bind:href=" '/user/'+blog.user_id" v-text="blog.user_name"></a>
+                    </td>
+                    <td>
+                        <span v-text="blog.created_at.toDateTime()"></span>
+                    </td>
+                    <td>
+                        <a href="#0" v-on:click="edit_blog(blog)"><i class="glyphicon glyphicon-edit"></i> 
+                        <a href="#0" v-on:click="delete_blog(blog)"><i class="glyphicon glyphicon-trash"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation" style="align-items: center;">
+          <ul class="pagination" style="text-align: center;">
+            <bs-pagination v-bind:page="page"></bs-pagination>
+          </ul>
+        </nav>
+    </div>
+    </div>
+  </div>
+	</div>
+</div>
+
+<script>
+if (typeof(Vue)!=='undefined') {
+    Vue.filter('datetime', function (value) {
+        var d = value;
+        if (typeof(value)==='number') {
+            d = new Date(value);
+        }
+        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes();
+    });
+    Vue.component('bs-pagination', {
+        props: ['page'],
+        template: '<ul class="pagination">' +
+                '<li v-if="page.page_index === 1" class="disabled"><a aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>' +
+                '<li v-if="page.page_index !== 1"><a v-bind:onclick="\'gotoPage(\' + (page.page_index-1) + \')\'" href="#0" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>' + 
+
+                '<template class="pagination" style="display: inline;float: left;" v-for="i in page.totalPage">'+
+                '<li v-if="i===page.page_index" class="active"><span v-text="i"></span></li>'+
+                '<li v-if="i!==page.page_index"><a v-bind:onclick="\'gotoPage(\' + (i) + \')\'" href="#0"><span v-text="i"></span></a></li>'+
+                '</template>' + 
+
+                '<li v-if="page.page_index === page.totalPage" class="disabled"><a aria-label="Previous"><span aria-hidden="true">&raquo;</span></a></li>' +
+                '<li v-if="page.page_index !== page.totalPage"><a v-bind:onclick="\'gotoPage(\' + (page.page_index+1) + \')\'" href="#0" aria-label="Previous"><span aria-hidden="true">&raquo;</span></a></li>' + 
+            '</ul>',
+    });
+}
+function initVM(data) {
+    var vm = new Vue({
+        el: '#vm',
+        data: {
+            blogs: data.blogs,
+            page: data.page
+        },
+        methods: {
+            edit_blog: function (blog) {
+                location.assign('/bs/manage/blogs/edit?id=' + blog.id);
+            },
+            delete_blog: function (blog) {
+                if (confirm('确认要删除“' + blog.name + '”？删除后不可恢复！')) {
+                    postJSON('/api/blogs/' + blog.id + '/delete', function (err, r) {
+                        if (err) {
+                            return alert(err.message || err.error || err);
+                        }
+                        refresh();
+                    });
+                }
+            }
+        }
+    });
+    $('#vm').show();
+}
+$(function() {
+    getJSON('/api/blogs', {
+        page: {{ page_index }}
+    }, function (err, results) {
+        if (err) {
+            return fatal(err);
+        }
+        $('#loading').hide();
+        initVM(results);
+    });
+});
+</script>
+
+{% endblock %}

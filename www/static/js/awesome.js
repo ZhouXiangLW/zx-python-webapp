@@ -368,6 +368,8 @@ if (typeof(Vue)!=='undefined') {
     });
 }
 
+
+
 function redirect(url) {
     var
         hash_pos = url.indexOf('#'),

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!--   
+                   _ooOoo_
+                  o8888888o
+                  88" . "88
+                  (| -_- |)
+                  O\  =  /O
+               ____/`---'\____
+             .'  \\|     |//  `.
+            /  \\|||  :  |||//  \
+           /  _||||| -:- |||||-  \
+           |   | \\\  -  /// |   |
+           | \_|  ''\---/''  |   |
+           \  .-\__  `-`  ___/-. /
+         ___`. .'  /--.--\  `. . __
+      ."" '<  `.___\_<|>_/___.'  >'"".
+     | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+     \  \ `-.   \_ __\ /__ _/   .-` /  /
+======`-.____`-.___\_____/___.-`____.-'======
+                   `=---='
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         佛祖保佑       永无BUG   
+ -->
+ {% macro pagination(url, page, tatalPage) %}
+    <ul class="pagination">
+        {% if totalPage < 10 %}
+            {% if page.page_index == 1 %}
+                <li class="disabled"><span aria-hidden="true">&laquo;</span></li>
+            {% else %}
+                <li><a href="{{ url }}{{ page.page_index - 1 }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+            {% endif %}
+            {% for i in range(tatalPage) %}
+                {% if i+1 == page.page_index %}
+                    <li class="active"><a href="{{ url }}{{ i+1 }}">{{ i+1 }}</a></li>
+                {% else %}
+                    <li><a href="{{ url }}{{ i+1 }}">{{ i+1 }}</a></li>
+                {% endif %}
+            {% endfor %} 
+            {% if page.page_index == totalPage %}
+                <li class="disabled"><span aria-hidden="true">&raquo;</span></li>
+            {% else %}
+                <li><a href="{{ url }}{{ page.page_index + 1 }}" aria-label="Previous"><span aria-hidden="true">&raquo;</span></a></li>
+            {% endif %}
+        {% endif %}
+    </ul>
+{% endmacro %}
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="zx">
+    {% block meta %}<!-- block meta  -->{% endblock %}
+    <title>{% block title %} ? {% endblock %} -周翔的个人博客</title>
+    <link rel="stylesheet" href="/static/css/uikit.min.css"/>
+    <link href="/static/bootshrap/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/awesome.css"/>
+    
+
+    <!-- hightlight.js -->
+    <link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/solarized_dark.min.css">
+    <script src="http://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+
+    <script src="/static/bootshrap/js/jquery-3.1.1.js"></script>
+    <script src="/static/bootshrap/js/bootstrap.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/bootshrap/js/myjs.js"></script>
+    <script src="/static/js/awesome.js"></script>
+    <script src="/static/js/sha1.min.js"></script>
+    <script>
+function showErr(msg,id){
+  var p = document.createElement('p');
+  p.innerText = msg.message || msg;
+  $(id).removeClass("hidden").append(p);
+}
+  $(function() {
+    var vmAuth = new Vue({
+        el: '#AuthVM',
+        data: {
+            email: '',
+            passwd: ''
+        },
+        methods: {
+            submit: function(event) {
+                event.preventDefault();
+                var
+                    $form = $('#AuthVM'),
+                    email = this.email.trim().toLowerCase(),
+                    data = {
+                        email: email,
+                        passwd: this.passwd==='' ? '' : CryptoJS.SHA1(email + ':' + this.passwd).toString()
+                    };
+                $form.postJSON('/api/authenticate', data, function(err, result) {
+                    if (! err) {
+                        location.assign(window.location.href);
+                    }else{
+                      showErr(err,"#loginErr");
+                    }
+                });
+            }
+        }
+    });
+});
+  function validateEmail(email) {
+    var re = /^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$/;
+    return re.test(email.toLowerCase());
+}
+
+$(function () {
+    var RegVM = new Vue({
+        el: '#RegVM',
+        data: {
+            name: '',
+            email: '',
+            password1: '',
+            password2: ''
+        },
+        methods: {
+            submit: function (event) {
+                event.preventDefault();
+                var $form = $('#RegVM');
+                if (! this.name.trim()) {
+                    return showErr('请输入名字',"#RegErr");
+                }
+                if (! validateEmail(this.email.trim().toLowerCase())) {
+                    return showErr('请输入正确的Email地址',"#RegErr");
+                }
+                if (this.password1.length < 6) {
+                    return showErr('口令长度至少为6个字符',"#RegErr");
+                }
+                if (this.password1 !== this.password2) {
+                    return showErr('两次输入的口令不一致',"#RegErr");
+                }
+                var email = this.email.trim().toLowerCase();
+        var name = this.name.trim();
+                $form.postJSON('/api/users', {
+                    name: name,
+                    email: email,
+                    passwd: CryptoJS.SHA1(email + ':' + this.password1).toString()
+                }, function (err, r) {
+          alert("姓名："+name);
+                    if (err) {
+                        return showErr(err,"#RegErr");
+                    }
+                    return location.assign(window.location.href);
+                });
+            }
+        }
+    });
+  $("#RegVM").show();
+   
+});
+  </script>
+    {% block css %}
+    {% endblock %}
+   <style type="text/css">
+      body{
+        font-size: 16px;
+        line-height: 1.7;
+      }
+      a{
+        color:gray;
+      }
+   </style>
+
+  </head>
+
+  <body style="color: #000000">
+
+    <nav class="navbar navbar-default navbar-fixed-top" >
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">周翔的个人博客</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
+            {% if __user__ %}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> {{__user__.name}}</span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/signout"><span class="glyphicon glyphicon-log-out"></span> 登出</a></li>
+              </ul>
+            </li>
+            {% else %}
+            <li><a class="btn" data-toggle="modal" data-target="#signinPage"><span class="glyphicon glyphicon-pencil"></span> 注册</a></li>
+            <li><a class="btn" data-toggle="modal" data-target="#loginPage"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+            {% endif %}
+          </ul>
+          <ul class="nav navbar-nav ">
+            {% block navbar %}
+            {% endblock %}
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+      {% block content %}
+      {% endblock %}
+      <!--注册模态框 -->
+      <div class="modal fade" id="signinPage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+       <div class="modal-dialog" role="document">
+          <div class="modal-content">
+           <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+             <h4 class="modal-title" id="myModalLabel">欢迎注册</h4>
+           </div>
+            <div class="modal-body">
+              <form id="RegVM" v-on:submit="submit">
+                <div id="RegErr" class="alert alert-danger hidden"></div>
+                <div class="form-group">
+                 <label for="exampleInputEmail1">姓名(昵称):</label>
+                 <input class="form-control" v-model="name" type="text" maxlength="50" placeholder="名字">
+               </div>
+               <div class="form-group">
+                 <label for="exampleInputEmail1">电子邮箱：</label>
+                 <input class="form-control" v-model="email" type="text" maxlength="50" placeholder="your-name@example.com">
+               </div>
+                <div class="form-group">
+                 <label for="exampleInputPassword1">密码：</label>
+                 <input class="form-control" v-model="password1" type="password" maxlength="50" placeholder="输入口令">
+               </div>
+                <div class="form-group">
+                 <label for="exampleInputPassword1">重复密码：</label>
+                 <input class="form-control" v-model="password2" type="password" maxlength="50" placeholder="重复口令">
+                 <hr />
+                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                 <button type="submit" class="btn btn-primary">注册</button>
+               </div>
+              </form>
+            </div>
+         </div>
+       </div>
+      </div>
+      <!-- 注册模态框 -->
+
+      <!--  登录模态框 -->
+      <div class="modal fade" id="loginPage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+       <div class="modal-dialog" role="document">
+          <div class="modal-content">
+           <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+             <h4 class="modal-title" id="myModalLabel">欢迎登录</h4>
+           </div>
+            <div class="modal-body">
+              <form id="AuthVM" v-on:submit="submit">
+                <div id="loginErr" class="alert alert-danger hidden"></div>
+               <div class="form-group">
+                 <label for="exampleInputEmail1">电子邮箱：</label>
+                 <input v-model="email" name="email" type="text" placeholder="电子邮件" maxlength="50"  class="form-control" placeholder="Email">
+               </div>
+                <div class="form-group">
+                 <label for="exampleInputPassword1">密码：</label>
+                 <input v-model="passwd" name="passwd" type="password" placeholder="口令" maxlength="50" class="form-control" placeholder="Email">
+               </div>
+               <button type="submit" class="btn btn-primary">登录</button>
+               <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              </form>
+            </div>
+         </div>
+       </div>
+      </div>
+      <!-- 登录模态框 -->
+      <hr>
+
+      <footer class="container" style="background-color: #eee">
+        <p align="center">&copy; 2016 Company, Inc.</p>
+      </footer>
+    </div> <!-- /container -->
+
+ 
+  </body>
+</html>
