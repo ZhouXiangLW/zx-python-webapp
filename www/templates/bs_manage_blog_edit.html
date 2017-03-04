@@ -2,6 +2,10 @@
 {% block title %}日志{% endblock %}
 {% block css %}
 <style type="text/css">
+input[type="file"] {
+    display: inline-block;
+    width:70%;
+}
 </style>
 {% endblock %}  
 
@@ -25,14 +29,29 @@
             <label>标题</label>
                 <input v-model="name" name="name" type="text" placeholder="标题" class="form-control" />
             <label>内容</label>
-            <textarea v-model="content" rows="16" name="content" placeholder="内容" class="uk-width-1-1" style="resize:none;"></textarea>
-
-            <button type="submit" class="btn btn-info"><i class="uk-icon-save"></i> 保存</button>
-            <a href="/bs/manage/blogs" class="btn btn-danger"><i class="uk-icon-times"></i> 取消</a>
+            <textarea v-model="content" rows="16" name="content" placeholder="内容(支持markdown语法)" class="form-control"  style="resize:none;"></textarea>
+            
+            <div style="margin-top:20px">
+                <button type="submit" class="btn btn-info"><i class="uk-icon-save"></i> 保存</button>
+                <a href="/bs/manage/blogs" class="btn btn-danger"><i class="uk-icon-times"></i> 取消</a>
+            </div>
 
         </form>
     </div>
     </div>
+    <div class="col-md-4">
+        <div class="panel panel-default" style="margin-top: 20px" >
+                <div class="panel-heading">上传图片</div>
+                <div class="panel-body">
+                    <div id="ImgErr" class="alert alert-danger hidden"></div>
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <input id="file" type="file" name="file"/>
+                        <button id="upload" type="button" class="btn btn-info">上传</button>
+                    </form>
+                    <div id="preview" style="margin-top: 10px"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script>
@@ -79,5 +98,30 @@ $(function () {
         });
     }
 });
+
+$('#upload').click(function(event){
+        if($('#file').val() === ''){
+            showErr('没有选择文件','#ImgErr')
+            return;
+        }
+        $('#ImgErr').addClass('hidden')
+        $('#upload').html('上传中...')
+        $.ajax({
+            url: '/upload',
+            type: 'POST',
+            cache: false,
+            data: new FormData($('#uploadForm')[0]),
+            processData: false,
+            contentType: false
+        }).done(function(res) {
+            $('#upload').html('上传');
+            $('#file').val('');
+            var img = '<img src="' + res + '" style="background-size:cover;"/>';
+            var p = '<p>图片地址:&nbsp;&nbsp;' + res + '</p>';
+            $('#preview').append(img).append(p);
+        }).fail(function(res) {
+            
+        });
+    });
 </script>
 {% endblock %}

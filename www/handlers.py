@@ -6,7 +6,6 @@ from coreweb import get, post
 from models import User, Comment, Blog, next_id
 from apis import APIValueError, APIResourceNotFoundError, APIPermissionError, Page
 
-from models import User, Comment, Blog, next_id
 from config import configs
 
 from aiohttp import web
@@ -16,6 +15,8 @@ from urllib import request
 import markdown2
 
 import simplejson
+
+import os
 
 COOKIE_NAME = 'awesession'
 _COOKIE_KEY = configs.session.secret
@@ -169,7 +170,7 @@ def siginin():
 
 #登陆处理函数	
 @post('/api/authenticate')
-async def authenticate(*, email, passwd):
+async def authenticate(request, *, email, passwd):
 	if not email:
 		raise APIValueError('email','Invalid email')
 	if not passwd:
@@ -256,7 +257,7 @@ async def get_blog(id):
 	blog.rd_times = rd_times
 	await blog.update()
 	comments = await Comment.findAll('blog_id=?', [id], orderBy='created_at desc')
-	
+	 
 	for c in comments:
 		c.html_content = text2html(c.content)
 	return{
@@ -416,7 +417,7 @@ async def get_bs_index():
 	blogs = await Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
 	for blog in blogs:
 		blog.comment_count = await Comment.findNumber(Comment, 'count(id)', 'blog_id=?', [blog.id])
-		if len(blog.name) > 15:
+		if len(blog.name) > 17:
 			blog.shortname = blog.name[:17] + '...'
 		else:
 			blog.shortname = blog.name
@@ -484,6 +485,18 @@ def manage_create_blog():
 		'action': '/api/blogs'
 	}
 
+@get('/about')
+def get_obout_page(request):
+	return '<h1>博主很懒，还没写好这个页面</h1>'
 
-
-
+	
+@post('/upload')
+async def upload_image(request):
+	data = request.__data__
+	filename = next_id()[10:20] + '.jpg'
+	path = os.path.abspath('.') + '/static/img/' + filename
+	img = data['file'].file
+	content = img.read()
+	with open(path, 'wb') as f:
+		f.write(content)
+	return '/static/img/' + filename

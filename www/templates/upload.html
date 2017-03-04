@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<script src="/static/bootshrap/js/jquery-3.1.1.js"></script>
+<head>
+	<title>上传图片</title>
+</head> 
+<body>
+	<form id="uploadForm" enctype="multipart/form-data">
+    	<input id="file" type="file" name="file"/>
+    	<button id="upload" type="button">upload</button>
+	</form>
+
+	<script type="text/javascript">
+	$('#upload').click(function(event){
+		$.ajax({
+    		url: '/upload',
+    		type: 'POST',
+    		cache: false,
+    		data: new FormData($('#uploadForm')[0]),
+    		processData: false,
+    		contentType: false
+		}).done(function(res) {
+		}).fail(function(res) {});
+	});
+		
+	</script>
+</body>
+</html>
+

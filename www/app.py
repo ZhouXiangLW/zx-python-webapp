@@ -1,4 +1,4 @@
-﻿import logging; logging.basicConfig(level=logging.INFO)
+import logging; logging.basicConfig(level=logging.INFO)
 
 import asyncio, os, json, time
 from datetime import datetime
@@ -77,7 +77,7 @@ async def data_factory(app, handler):
 			if request.content_type.startswith('application/json'):
 				request.__data__ = await request.json()
 				logging.info('request json: %s' % str(request.__data__))
-			elif request.content_type.startswith('application/x-www-form-urlencoded'):
+			elif request.content_type.startswith('application/x-www-form-urlencoded') or request.content_type.startswith('multipart/form-data'):
 				request.__data__ = await request.post()
 				logging.info('request form: %s' % str(request.__data__))
 		return (await handler(request))
@@ -101,8 +101,6 @@ async def response_factory(app, handler):
 			return resp
 		if isinstance(r, dict):
 			template = r.get('__template__')
-			print('request')
-			print(request)
 			if template is None:
 				resp = web.Response(body=json.dumps(r, ensure_ascii=False, default=lambda o: o.__dict__).encode('utf-8'))
 				resp.content_type = 'application/json;charset=utf-8'
@@ -127,7 +125,7 @@ async def response_factory(app, handler):
 async def init(loop):
 	await orm.create_pool(loop=loop, host='127.0.0.1', port=3306, user='www-data', password='www-data', db='awesome')
 	app = web.Application(loop=loop, middlewares=[
-    logger_factory, auth_factory, response_factory])
+    logger_factory, auth_factory, data_factory ,response_factory])
 	init_jinja2(app, filters=dict(datetime=datetime_filter))
 	add_routes(app, 'handlers')
 	add_static(app)
@@ -137,4 +135,4 @@ async def init(loop):
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(init(loop))
-loop.run_forever()
+loop.run_forever() 
