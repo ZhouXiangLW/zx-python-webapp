@@ -64,12 +64,11 @@ blockquote p{
 {% endblock %}
 {% block content %}
 <div class="container" style="margin-top: 50px">
-	<div style="padding: 10px"></div>
 	<div class="row">
   	<div class="col-md-8">
   			<div class="panel-body">
           <h1>{{blog.name}}</h1>
-          <hr />
+          <p class="uk-article-meta">发表于{{blog.created_at|datetime}}</p>
   				<p><td>{{  html_content|safe }}</td></p>
   			</div>
   	     <hr />
@@ -120,7 +119,7 @@ blockquote p{
         </ul>
       </div>
   	<div class="col-md-4">
-  		<div class="panel panel-default" style="padding: 10px">
+  		<div class="panel panel-default" style="padding: 10px;margin-top: 15px">
         <div class="panel-body" style="text-align:center;">
             <img class="img-circle" width="120" height="120" src="/static/img/zx.png" />
             <hr />

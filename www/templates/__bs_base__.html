@@ -134,7 +134,7 @@ $(function () {
                     return showErr('两次输入的口令不一致',"#RegErr");
                 }
                 var email = this.email.trim().toLowerCase();
-        var name = this.name.trim();
+                var name = this.name.trim();
                 $form.postJSON('/api/users', {
                     name: name,
                     email: email,

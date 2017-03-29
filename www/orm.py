@@ -110,7 +110,7 @@ class ModelMetaclass(type):
 		primaryKey = None
 		for k,v in attrs.items():
 			if isinstance(v,Field):
-				logging.info('founding mapping:%s ==> %s'%(k,v))
+				logging.info('founding mapping:%s ==> %s'%(k,v))	
 				mappings[k] = v
 				if v.primary_key:
 					#找到主键
@@ -166,7 +166,8 @@ class Model(dict, metaclass=ModelMetaclass):
 	async def find(cls, pk):
 		'find object by primaryKey'
 		rs = await select('%s where %s = ?' % (cls.__select__, cls.__primary_key__), [pk], 1)
-		if len(rs) == 0:
+		print(rs)
+		if len(rs) == 0: 
 			return None
 		return cls(**rs[0])
 
@@ -229,5 +230,3 @@ class Model(dict, metaclass=ModelMetaclass):
 		if len(rs) == 0:
 			return None
 		return rs[0]['_num_']
-		
-		

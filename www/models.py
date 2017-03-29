@@ -39,3 +39,5 @@ class Comment(Model):
 	user_image = StringField(column_type='varchar(500)')
 	content = TextField()
 	created_at = FloatField(default=time.time)
+
+

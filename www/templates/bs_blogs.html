@@ -27,7 +27,8 @@
   				</div>
   			</div>
   			<div class="panel-body" style="WORD-WRAP: break-word;word-break:break-all">
-  				<p>{{blog.summary}}</p>
+          <p class="uk-article-meta">发表于{{blog.created_at|datetime}}</p>
+  				<p>{{blog.summary}}</p> 
   			</div>
   			<div class="panel-footer" style="color: gray;font-size: 10px;height:40px">
   				<span class="glyphicon glyphicon-comment" style="display: block;float:left;"> 评论数 {{blog.comment_count}}</span>

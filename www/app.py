@@ -9,8 +9,6 @@ from coreweb import add_routes, add_static
 import orm
 from handlers import cookie2user, COOKIE_NAME
 
-
-	
 def datetime_filter(t):
     delta = int(time.time()-t)
     if delta < 60:
