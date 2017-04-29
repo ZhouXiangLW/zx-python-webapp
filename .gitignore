@@ -2,3 +2,4 @@
 fabfile.py
 *.xml
 dist-awesome.tar.gz
+/env
