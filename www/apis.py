@@ -56,11 +56,3 @@ class Page(object):
 		 return 'item_count: %s, page_count: %s, page_index: %s, page_size: %s, offset: %s, limit: %s' % (self.item_count, self.page_count, self.page_index, self.page_size, self.offset, self.limit)
 		
 	__repr__ = __str__
-		
-		
-		
-		
-		
-		
-		
-		

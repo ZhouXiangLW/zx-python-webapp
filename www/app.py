@@ -121,7 +121,7 @@ async def response_factory(app, handler):
 	return response
 
 async def init(loop):
-	await orm.create_pool(loop=loop, host='127.0.0.1', port=3306, user='www-data', password='www-data', db='awesome')
+	await orm.create_pool(loop=loop, host='127.0.0.1', port=3306, user='root', password='zxzx123123', db='awesome')
 	app = web.Application(loop=loop, middlewares=[
     logger_factory, auth_factory, data_factory ,response_factory])
 	init_jinja2(app, filters=dict(datetime=datetime_filter))

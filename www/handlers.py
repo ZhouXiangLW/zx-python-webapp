@@ -105,35 +105,8 @@ async def cookie2user(cookie_str):
 		return None
 	
 	
-@get('/test')
-def test():
-	return{
-		'__template__': 'index.html'
-	}
-
-#请求主页
-@get('/uk')
-async def index(*, page=1):
-	page_index = get_page_index(page)
-	num = await Blog.findNumber(Blog, 'count(id)')
-	page = Page(num, page_index, page_size=5)
-	blogs = await Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
-	for blog in blogs:
-		blog.comment_count = await Comment.findNumber(Comment, 'count(id)', 'blog_id=?', [blog.id])
-	return{
-		'__template__': 'blogs.html',
-		'blogs': blogs,
-		'page':page
-	}
-	
 
 
-#请求注册页面
-@get('/register')
-def register():
-	return{
-		'__template__':'register.html'
-	}
 
 #注册处理函数	
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
@@ -161,12 +134,7 @@ async def api_register_user(*, email, name, passwd):
 	r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
 	return r
 
-#请求登陆页面
-@get('/signin')
-def siginin():
-	return{
-		'__template__':'signin.html'
-	}
+
 
 #登陆处理函数	
 @post('/api/authenticate')
@@ -221,14 +189,7 @@ def manage_create_blog():
 		'action': '/api/blogs'
 	}
 	
-#请求重新编辑日志页面
-@get('/manage/blogs/edit')
-def manage_edit_blog(*, id):
-    return {
-        '__template__': 'manage_blog_edit.html',
-        'id': id,
-        'action': '/api/blogs/%s' % id
-    }
+
 
 #日志更新函数	
 @post('/api/blogs/{id}')
@@ -487,7 +448,10 @@ def manage_create_blog():
 
 @get('/about')
 def get_obout_page(request):
-	return '<h1>博主很懒，还没写好这个页面</h1>'
+
+	return {
+	    '__template__':'aboutme.html'
+	}
 
 	
 @post('/upload')

@@ -1,0 +1,49 @@
+#image{
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
+pre{
+  background-color: #f0f0f0;
+  border-radius: 0px;
+  border-color: #ccc;
+  overflow-x: auto;
+  max-height: 400px;
+}
+pre code{
+  white-space: pre;
+}
+.hljs{
+  background-color: #f0f0f0;
+}
+blockquote {
+    font-size: 16px;
+    line-height: 1.7;
+    border-left: 5px solid #aaa;
+    background-color: #f0f0f0
+}
+h1{
+  font-size: 26px;
+}
+h2{
+  margin-top: 30px;
+  font-size: 24px;
+}
+h3{
+  font-size: 22px;
+}
+h4{
+  font-size: 20px;
+}
+h5{
+  font-size: 18px;
+}
+h6{
+  font-size: 16px;
+}
+blockquote p{
+  font-style: normal;
+}
+:not(pre)>code, :not(pre)>kbd, :not(pre)>samp{
+  white-space: normal;
+}

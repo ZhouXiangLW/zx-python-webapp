@@ -1,0 +1,63 @@
+{% extends '__bs_base__.html' %}
+{% block title %}日志{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/css/article.css">
+{% endblock %}	
+
+    {% block navbar %}
+    <li><a href="/"><span class="glyphicon glyphicon-home"></span> 首页</a></li>
+    <li><a href="/bs/blogs"><span class="glyphicon glyphicon-book"></span> 日志</a></li>
+    {% if __user__.admin %}
+    <li><a href="/bs/manage/blogs"><span class="glyphicon glyphicon-wrench"></span> 管理</a></li>
+    {% endif %}
+    <li class="active"><a href="/about"><span class="glyphicon glyphicon-info-sign"></span> 关于</a></li>
+    {% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 50px">
+	<div style="padding: 10px"></div>
+	<div class="row">
+  	<div class="col-md-8">
+      <p><td><h2>前言</h2>
+
+      <p>关于小站，这里还有一段渊源，我本来决定写C的，一直以来，我觉得底层的东西，才有技术含量。所以虽然我学过Java，也没有去深究。 <br />
+      偶然间听说了Git这个东西，于是到网上去寻找教程。这一找，就发现了一个<a href="http://www.liaoxuefeng.com/" title="廖雪峰的官方网站">宝藏</a>。花了两天时间，学会了Git的基本操作，学会了github，同时也发现了python这种神奇的语言。python简洁的语法让我迅速爱上了这门脚本语言（在此之前没有接触过脚本语言）。于是就开始花费精力学习python，同时也走上了Web开发之路。  </p>
+
+      <h2>关于小站</h2>
+
+      <p>本站基于<a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000">廖雪峰python教程</a>的实战项目，目前重写了前端，后端添加了部分功能。
+      前端基于bootstrap框架开发。后端基于aiohttp异步web框架。采用mvc模式。  </p>
+
+      <h3>前端依赖项目：</h3>
+
+      <ol>
+      <li><a href="http://www.bootcss.com/">bootstrap</a>  </li>
+      <li><a href="https://cn.vuejs.org/">vue.js</a>  </li>
+      <li><a href="https://jquery.com/">jQuery</a>  </li>
+      <li><a href="https://highlightjs.org/">hightlight.js</a>  </li>
+      </ol>
+
+      <h3>后端依赖项目</h3>
+
+      <ol>
+      <li><a href="http://aiohttp.readthedocs.io">aiohttp</a>  </li>
+      <li><a href="http://docs.jinkan.org">jinja2</a>  </li>
+      <li><a href="https://pypi.python.org/pypi/markdown2">markdown2</a>  </li>
+      </ol>
+
+      <h2>关于内容</h2>
+
+      <p>小站博客部分的内容坚持原创，我也会坚持学习来增加产出量，首页部分，我会从互联网上抓取一些有趣的信息，比如首页的图片来自<a href="http://cn.bing.com/">必应</a>（随必应每天更新），开心一刻部分来自<a href="http://www.qiushibaike.com/">糗事百科</a>,天下事部分暂时还未实现，也准备从各大门户网站抓取。既然学习python，爬虫自然也会接触，首页就拿来练手。</p>
+
+      <h2>后语</h2>
+
+      <p>从开始学习python，到小站终于做的有点样子，断断续续的也有大半年。从开始的“兼职”到现在的“全职”，还是花费了不少精力。所以准备一直维护下去。目前后端的整体框架还是基于廖雪峰老师的实现项目，前端重写过但是代码混乱，不成体系，基本都是东拼西凑的。需要学习的地方还有很多，我平时学习过程中的一些见解，以及前端后端的一些实现细节，都会发布在小站上。欢迎大家来交流。</p>
+      </td></p>
+  	</div>
+  	<div class="col-md-4">
+
+  	</div>
+  	</div>
+</div>
+
+{% endblock %}
