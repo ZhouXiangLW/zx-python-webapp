@@ -20,5 +20,6 @@ function getJoke() {
 		js = document.createElement('script'),
 		head =  $('head')[0];
 	js.src = 'http://zhouxiang.net.cn/api/get_qiubai?callback=setJoke&page='+Math.floor(Math.random()*40);
+
 	head.appendChild(js);
 }
