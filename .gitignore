@@ -4,3 +4,5 @@ fabfile.py
 dist-awesome.tar.gz
 /env
 __pychche__
+.vscode/
+.idea/

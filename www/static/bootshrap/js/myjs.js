@@ -7,7 +7,7 @@ function setBgPic() {
 	var
 		js = document.createElement('script'),
 		head =  $('head')[0];
-	js.src = 'http://zhouxiang.net.cn/api/get_bing_photo?callback=getURL';
+	js.src = 'http://123.206.115.58/api/get_bing_photo?callback=getURL';
 	head.appendChild(js);
 }
 function setJoke(data){
@@ -19,7 +19,7 @@ function getJoke() {
 	var
 		js = document.createElement('script'),
 		head =  $('head')[0];
-	js.src = 'http://zhouxiang.net.cn/api/get_qiubai?callback=setJoke&page='+Math.floor(Math.random()*40);
+	js.src = 'http://123.206.115.58/api/get_qiubai?callback=setJoke&page='+Math.floor(Math.random()*40);
 
 	head.appendChild(js);
 }
